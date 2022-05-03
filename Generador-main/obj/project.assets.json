@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\aguac\\OneDrive\\Escritorio\\Generador-main\\Generador-main.csproj",
+      "projectUniqueName": "C:\\Users\\aguac\\OneDrive\\Escritorio\\Repositorio\\GeneradorEnsamblador\\Generador-main\\Generador-main.csproj",
       "projectName": "Generador-main",
-      "projectPath": "C:\\Users\\aguac\\OneDrive\\Escritorio\\Generador-main\\Generador-main.csproj",
+      "projectPath": "C:\\Users\\aguac\\OneDrive\\Escritorio\\Repositorio\\GeneradorEnsamblador\\Generador-main\\Generador-main.csproj",
       "packagesPath": "C:\\Users\\aguac\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\aguac\\OneDrive\\Escritorio\\Generador-main\\obj\\",
+      "outputPath": "C:\\Users\\aguac\\OneDrive\\Escritorio\\Repositorio\\GeneradorEnsamblador\\Generador-main\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\aguac\\AppData\\Roaming\\NuGet\\NuGet.Config"

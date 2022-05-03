@@ -1,46 +1,46 @@
+/*
+    Requerimiento 1: Modificar la matriz TranD para poder comentar codigo de linea y multilinea **
+    Requerimiento 2: La primera produccion debe ser publica 
+    Requerimiento 3: Para ST escapados quitar el diagonal(\)
+    Requerimiento 4: Cuando es clasificacion invocar el metodo Match sobrecargado sin comillas
+    Requerimiento 5: Agregar CIzquierdo y CDerecho en matriz TranD (generar automatas) **
+    Requerimiento 6: Programar el OR en producciones gramaticales  
+    Requerimiento 7: Generar el Program.cs invocando la primera produccion 
+*/
 using System.IO;
 using System;
 namespace Generador
 {
-
-    //Requerimiento 1: Modificar la matriz TranD para poder comentar codigo de linea y multilinea
-    //Requerimiento 2: La primera prodeccion debe ser publica
-    //Requerimiento 3: Para los simbolos ST quitarles la diagonal
-    //Requerimiento 4: Cuando es clasificacion invocar el metodo match sobrecargado sin comillas
-    //Requerimiento 5: Agregar el CIzquierdo y CDerecho en la matriz TranD
-    //Requerimiento 6: Programar el OR en producciones gramaticales
-    //Requerimiento 7: Generar el program.cs invocando la primera produccion
-
     public class Lenguaje:Sintaxis
     {
-        int tab;
+        int Tab;
         public Lenguaje()
         {
-            tab = 0;
+            Tab = 0;
         }
         private void Genera(string codigo) 
         {
-            if(codigo == "}")
+            if(codigo=="}")
             {
-                tab--;
+                Tab--;
             }
-            for(int i = 0; i < tab; i++)
+            for(int i = 0; i < Tab; i++)
             {
                 gen.Write("\t");
             }
             gen.WriteLine(codigo);
-            if(codigo == "{")
+            if(codigo=="{")
             {
-                tab++;
+                Tab++;
             }
         }
-        //Gramatica produce -> Cabecera Producciones
+        //Gramatica -> Cabecera Producciones
         public void Gramatica()
         {
             Cabecera();
             Producciones();
         }
-        //Cabecera -> Lenguaje: SNT
+        // Cabecera -> Lenguaje: SNT;
         private void Cabecera()
         {
             Match("Lenguaje");
@@ -50,20 +50,20 @@ namespace Generador
             Genera(getContenido());
             Match(Tipos.FinProduccion);
         }
-        //producciones -> {ListaProducciones}
+        // Producciones -> {ListaProducciones}
         private void Producciones()
         {
-            Match("{"); 
-            Genera("{"); 
-            Genera("public class Lenguaje:Sintaxis"); 
-            Genera("{"); 
-            ListaProducciones(); 
-            Genera("}"); 
-            Match("}"); 
-            Genera("}"); 
+            Match("{");
+            Genera("{");
+            Genera("public class Lenguaje:Sintaxis");
+            Genera("{");
+            ListaProducciones();
+            Genera("}");
+            Match("}");
+            Genera("}");
 
         }
-        //ListaProducciones -> Produccion; ListaProducciones?
+        // ListaProducciones -> Produccion; ListaProduciones?
         private void ListaProducciones()
         {
             Produccion();
@@ -72,118 +72,119 @@ namespace Generador
                 ListaProducciones();
             }
         }
-        //Produccion -> STN Flechita
+        // Produccion -> SNT Flechita 
         private void Produccion()
         {
-            Genera("private void " + getContenido()+ ("()"));
+            Genera("private void " + getContenido()+("()"));
             Genera("{");
             Match(Tipos.SNT);
             Match(Tipos.Flechita);
-            ListaSimbolo();
+            ListaSimbolos();
             Match(Tipos.FinProduccion);
             Genera("}");
         }
-        // ListaSimbolo -> Simbolo ListaSimbolo?
-        private void ListaSimbolo()
+        // ListaSimbolos -> Simbolo ListaSimbolos?
+        private void ListaSimbolos()
         {
             Simbolo();
-            if(getClasificacion() == Tipos.ST || getClasificacion() == Tipos.SNT || getClasificacion() == Tipos.PIzquierdo || getClasificacion()== Tipos.CIzquierdo)
+            if(getClasificacion()== Tipos.ST|| getClasificacion()== Tipos.SNT|| getClasificacion()== Tipos.PIzquierdo|| getClasificacion()==Tipos.CIzquierdo) 
             {
-                ListaSimbolo();
+                ListaSimbolos();
             }
         }
-        // ListaSimbolo -> ST | SNT
+        // Simbolo -> ST | SNT 
         private void Simbolo()
         {
             if(getClasificacion() == Tipos.ST)
             {
-                if(EsClasificacion(getContenido()))
+                if(EsClassificacion(getContenido()))
                 {
                     Genera("Match(Tipos."+ "\""+ getContenido() +"\");");
                 }
                 else
                 {
                     Genera("Match("+ "\""+ getContenido() +"\");");
-                }   
+                }
                 Match(Tipos.ST);
             }
-            else if(getClasificacion() == Tipos.SNT)
+            else if(getClasificacion()==Tipos.SNT)
             {
-                Genera(getContenido() + "();");                
+                Genera(getContenido()+"();");
                 Match(Tipos.SNT);
             }
-            else if(getClasificacion() == Tipos.PIzquierdo)
+            else if(getClasificacion()==Tipos.PIzquierdo)
             {
                 CerraduraEpsilon();
             }
-            else if(getClasificacion() ==Tipos.CIzquierdo)
+            else if(getClasificacion()==Tipos.CIzquierdo)
             {
                 Match(Tipos.CIzquierdo);
-                ListaOrs();
+                Console.WriteLine("Lista de ORs");
+                ListaORs();
                 Match(Tipos.CDerecho);
             }
         }
         private void CerraduraEpsilon()
         {
             Match(Tipos.PIzquierdo);
-            string Simbolo = getContenido();
+            string Simbolo=getContenido();
             Match(Tipos.ST);
-            if(EsClasificacion(Simbolo))
+            if(EsClassificacion(Simbolo))
             {
-                Genera("if(getClasificacion() == Tipos."+ "\""+ Simbolo +"\");");
+                Genera("if(getClasificacion()==Tipos."+ "\""+ Simbolo +"\");");
             }
             else
             {
-                Genera("if(getContenido =="+ "\""+ Simbolo +"\");");
-            }   
+                Genera("if(getContenido()=="+ "\""+ Simbolo +"\");");
+            }
             Genera("{");
-            if(EsClasificacion(Simbolo))
+            if(EsClassificacion(Simbolo))
             {
                 Genera("Match(Tipos."+ "\""+ Simbolo +"\");");
             }
             else
             {
-               Genera("Match("+ "\""+ Simbolo +"\");");
-            } 
-            ListaSimbolo();
+                Genera("Match("+ "\""+ Simbolo  +"\");");
+            }
+            ListaSimbolos();
             Match(Tipos.PDerecho);
             Match(Tipos.Epsilon);
-            Genera("}");  
+            Genera("}");
         }
-        //LiistaOrs -> ST (|ListaOrs)?
-        private void ListaOrs()
+        //ListaORs -> ST (|ListaORs)?
+        private void ListaORs()
         {
-            string Simbolo = getContenido();
+            string Simbolo=getContenido();
             Match(Tipos.ST);
-            if(EsClasificacion(Simbolo))
+            if(EsClassificacion(Simbolo))
             {
-                Genera("if(getClasificacion() == Tipos."+ "\""+ Simbolo +"\");");
+                Genera("if(getClasificacion()==Tipos."+ "\""+ Simbolo +"\");");
             }
             else
             {
-                Genera("if(getContenido =="+ "\""+ Simbolo +"\");");
+                Genera("if(getContenido()=="+ "\""+ Simbolo +"\");");
             }
-            Genera("{");
-            if(EsClasificacion(Simbolo))
+            Genera("{"); 
+            if(EsClassificacion(Simbolo))
             {
                 Genera("Match(Tipos."+ "\""+ Simbolo +"\");");
             }
             else
             {
-               Genera("Match("+ "\""+ Simbolo +"\");");
-            } 
-            Genera("}"); 
-            if(getClasificacion() == Tipos.Or)
+                Genera("Match("+ "\""+ Simbolo  +"\");");
+            }
+            Genera("}");
+            if(getClasificacion()==Tipos.Or)
             {
                 Match(Tipos.Or);
-                ListaOrs();
+                ListaORs();
             }
         }
-        private bool EsClasificacion(string ST)
+        private bool EsClassificacion(string ST)
         {
             switch(ST)
             {
-                case "identificador":
+                case "identificador": 
                 case "numero": 
                 case "caracter": 
                 case "asignacion": 
@@ -191,21 +192,20 @@ namespace Generador
                 case "opLogico": 
                 case "opRelacional": 
                 case "opTermino": 
-                case "opFactor": 
+                case "opFactor":
                 case "incTermino": 
                 case "incFactor": 
                 case "Cadena": 
-                case "inicializacion":
-                case "tipoDato":
+                case "inicializacion": 
+                case "tipoDato": 
                 case "zona":
                 case "condicion":
-                case "ciclo":
-                case "ternario":
+                case "ciclo":  
+                case "ternario": 
                 case "opFlujoEntrada":
-                case "opFlujoSalida":
-                return true;
+                case "opFlujoSalida": return true;
             }
             return false;
-        } 
+        }
     }
 }
